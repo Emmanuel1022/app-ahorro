@@ -28,4 +28,10 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build
+      - name: Build (apuntando al Auth simulado de las pruebas)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54329
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: clave-de-prueba
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

@@ -45,9 +45,18 @@ Las pruebas de integración crean una base `app_ahorro_test` en un PostgreSQL lo
 ```bash
 npm test             # todas (requiere PostgreSQL; ver TEST_DATABASE_ADMIN_URL en .env.example)
 npm run test:unit    # solo las que no necesitan base de datos
+npm run build && npm run test:e2e   # punta a punta con Playwright (usa un Auth simulado)
 ```
+
+Para las pruebas de punta a punta, compila con `NEXT_PUBLIC_SUPABASE_URL=http://localhost:54329` y
+`NEXT_PUBLIC_SUPABASE_ANON_KEY=clave-de-prueba`: Playwright levanta `tests/e2e/mock-auth-server.mjs`,
+que imita Supabase Auth.
 
 ## Base de datos en Supabase
 
 Con la [CLI de Supabase](https://supabase.com/docs/guides/cli): `supabase link` y luego `supabase db push`
-aplica las migraciones de `supabase/migrations/`.
+aplica las migraciones de `supabase/migrations/`. También se pueden ejecutar en orden desde el SQL Editor del panel.
+
+En **Authentication → URL Configuration** define la *Site URL* (por ejemplo `http://localhost:3000` en desarrollo)
+y agrega `<tu-dominio>/auth/callback` a las *Redirect URLs*: es el destino de los correos de confirmación y de
+recuperación de contraseña.
