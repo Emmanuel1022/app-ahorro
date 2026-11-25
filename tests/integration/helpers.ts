@@ -45,30 +45,30 @@ export async function asUser<T>(client: Client, userId: string, fn: (db: Db) => 
 }
 
 export async function balance(db: Db, accountId: string): Promise<string> {
-  const r = await db.one<{ current_balance: string }>(
-    "select current_balance from v_account_balances where account_id = $1",
+  const r = await db.one<{ saldo_actual: string }>(
+    "select saldo_actual from v_saldos_cuentas where cuenta_id = $1",
     [accountId],
   );
-  return r.current_balance;
+  return r.saldo_actual;
 }
 
 export async function setupAccounts(db: Db) {
-  const bank = await db.one<{ id: string }>("insert into banks (name, color) values ('BAC', '#E11D48') returning id");
-  const bank2 = await db.one<{ id: string }>("insert into banks (name) values ('BN') returning id");
+  const bank = await db.one<{ id: string }>("insert into bancos (nombre, color) values ('BAC', '#E11D48') returning id");
+  const bank2 = await db.one<{ id: string }>("insert into bancos (nombre) values ('BN') returning id");
   const crc = await db.one<{ id: string }>(
-    "insert into accounts (bank_id, name, type, currency, opening_balance) values ($1, 'Ahorro colones', 'savings', 'CRC', 100000) returning id",
+    "insert into cuentas (banco_id, nombre, tipo, moneda, saldo_inicial) values ($1, 'Ahorro colones', 'ahorro', 'CRC', 100000) returning id",
     [bank.id],
   );
   const crc2 = await db.one<{ id: string }>(
-    "insert into accounts (bank_id, name, type, currency, opening_balance) values ($1, 'Corriente BN', 'checking', 'CRC', 0) returning id",
+    "insert into cuentas (banco_id, nombre, tipo, moneda, saldo_inicial) values ($1, 'Corriente BN', 'corriente', 'CRC', 0) returning id",
     [bank2.id],
   );
   const usd = await db.one<{ id: string }>(
-    "insert into accounts (bank_id, name, type, currency, opening_balance) values ($1, 'Ahorro dólares', 'savings', 'USD', 1000) returning id",
+    "insert into cuentas (banco_id, nombre, tipo, moneda, saldo_inicial) values ($1, 'Ahorro dólares', 'ahorro', 'USD', 1000) returning id",
     [bank.id],
   );
   const cat = async (name: string) =>
-    (await db.one<{ id: string }>("select id from categories where name = $1 and parent_id is null", [name])).id;
+    (await db.one<{ id: string }>("select id from categorias where nombre = $1 and padre_id is null", [name])).id;
   return {
     bankId: bank.id,
     bank2Id: bank2.id,

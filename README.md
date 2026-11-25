@@ -7,11 +7,18 @@ transferencias, metas de ahorro, presupuestos, movimientos recurrentes, reportes
 
 ## Principios
 
-- El saldo de una cuenta **no se guarda**: se calcula como saldo inicial + movimientos activos (`v_account_balances`).
+- El saldo de una cuenta **no se guarda**: se calcula como saldo inicial + movimientos activos (`v_saldos_cuentas`).
 - Montos en `NUMERIC(18,2)` y aritmética con `decimal.js`; nunca `float`.
 - Cada movimiento conserva su monto y moneda originales; los consolidados se convierten con un tipo de cambio fechado.
 - Las reglas críticas viven en la base de datos: constraints, triggers, funciones transaccionales y Row Level Security.
 - Nada con historial se borra: los movimientos se anulan y bancos, cuentas y categorías se desactivan.
+
+## Nombres en la base de datos
+
+Tablas, columnas, valores y funciones están en español: `bancos`, `cuentas`, `categorias`, `movimientos`,
+`transferencias`, `metas_ahorro`, `aportes_meta`, `presupuestos`, `reglas_recurrentes`, `tipos_cambio`,
+`historial_cambios`; funciones `crear_transferencia`, `actualizar_transferencia`, `anular_transferencia`,
+`saldo_cuenta` y `tipo_cambio_referencia`. El código TypeScript usa nombres en inglés.
 
 ## Estructura
 

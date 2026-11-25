@@ -2,7 +2,7 @@
  * Cálculo de fechas de movimientos recurrentes. Trabaja con fechas de
  * calendario "YYYY-MM-DD" (sin hora) para evitar errores de zona horaria.
  */
-export type Frequency = "weekly" | "biweekly" | "monthly" | "yearly";
+export type Frequency = "semanal" | "quincenal" | "mensual" | "anual";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const fmt = (y: number, m: number, day: number) => `${y}-${pad(m)}-${pad(day)}`;
@@ -36,27 +36,27 @@ export function nextDueDate(current: string, frequency: Frequency, start: string
   const c = parse(current);
   const anchor = parse(start);
   switch (frequency) {
-    case "weekly":
+    case "semanal":
       return addDays(current, 7);
-    case "biweekly": {
+    case "quincenal": {
       const last = daysInMonth(c.y, c.m);
       if (c.day < 15) return fmt(c.y, c.m, 15);
       if (c.day < last) return fmt(c.y, c.m, last);
       return addMonthsClamped(c.y, c.m, 1, 15);
     }
-    case "monthly":
+    case "mensual":
       return addMonthsClamped(c.y, c.m, 1, anchor.day);
-    case "yearly":
+    case "anual":
       return addMonthsClamped(c.y, anchor.m, 12, anchor.day);
   }
 }
 
 /** Primera fecha válida de la regla, a partir de `start`. */
 export function firstDueDate(start: string, frequency: Frequency): string {
-  if (frequency !== "biweekly") return start;
+  if (frequency !== "quincenal") return start;
   const s = parse(start);
   if (s.day === 15 || s.day === daysInMonth(s.y, s.m)) return start;
-  return nextDueDate(start, "biweekly", start);
+  return nextDueDate(start, "quincenal", start);
 }
 
 /** Fechas vencidas desde `from` (incluida) hasta `until` (incluida), sin pasar de `end`. */
